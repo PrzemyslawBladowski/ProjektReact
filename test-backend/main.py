@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Generator, List
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session, joinedload
@@ -306,14 +306,15 @@ def update_post(post_id: int, payload: PostUpdatePayload, db: Session = Depends(
     return serialize_post(load_post_with_relations(db, post.id))
 
 
-@app.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(post_id: int, db: Session = Depends(get_db_session)) -> None:
+@app.delete("/posts/{post_id}")
+def delete_post(post_id: int, db: Session = Depends(get_db_session)) -> Response:
     post = db.query(PostModel).filter(PostModel.id == post_id).first()
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post nie istnieje")
 
     db.delete(post)
     db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @app.post("/posts/{post_id}/like", response_model=PostResponse)
