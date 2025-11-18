@@ -90,6 +90,8 @@ export function PostCard({
   };
 
   const isOwnPost = currentUser ? post.author.name === currentUser.name : false;
+  const postUrl =
+    typeof window !== 'undefined' ? `${window.location.origin}/post/${post.id}` : '';
 
   return (
     <Card className="mb-4 hover:shadow-lg transition-shadow duration-200">
@@ -349,7 +351,7 @@ export function PostCard({
         isOpen={showShareDialog}
         onClose={() => setShowShareDialog(false)}
         postContent={post.content}
-        postUrl={`${window.location.origin}/post/${post.id}`}
+        postUrl={postUrl}
       />
     </Card>
   );

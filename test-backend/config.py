@@ -16,17 +16,12 @@ DEV_USERS_FILE = Path(__file__).parent / "dev_users.txt"
 
 
 ALLOWED_FILE_EXTENSIONS = [
-    "pdf", "doc", "docx", "txt", "rtf"
-    
-    "xls", "xlsx", "csv"
-    
-    "ppt", "pptx"
-
+    "pdf", "doc", "docx", "txt", "rtf",
+    "xls", "xlsx", "csv",
+    "ppt", "pptx",
     "jpg", "jpeg", "png", "gif", "bmp", "svg",
-    
     "zip", "rar", "7z",
-    
-    "json", "xml", "yaml", "yml"
+    "json", "xml", "yaml", "yml",
 ]
 
 MAX_FILE_SIZE = 10 * 1024 * 1024

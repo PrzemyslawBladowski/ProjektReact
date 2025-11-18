@@ -1,3 +1,5 @@
+'use client';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Facebook, Linkedin, Instagram, Link as LinkIcon, Check } from 'lucide-react';

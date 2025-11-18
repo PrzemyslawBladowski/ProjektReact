@@ -38,7 +38,7 @@ export function UserProfile({
   likedPosts = new Set(),
   onUpdateProfile
 }: UserProfileProps) {
-  const isOwnProfile = user.name === currentUser.name;
+  const isOwnProfile = user.id === currentUser.id;
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const handleUpdateProfile = (updates: Partial<User>) => {

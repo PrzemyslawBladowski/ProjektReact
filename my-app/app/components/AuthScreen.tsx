@@ -14,6 +14,7 @@ import {
 import { Microscope, Mail, Lock, User as UserIcon, Building2, GraduationCap, ArrowLeft } from 'lucide-react';
 import { User } from '../../types';
 import { userStorage } from '../../lib/userStorage';
+import { createRemoteUser } from '../../lib/api';
 
 const POLISH_UNIVERSITIES = [
   'Uniwersytet Warszawski',
@@ -120,7 +121,7 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -142,27 +143,32 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
       return;
     }
     
-    const userData: User = {
+    const payload = {
       name: registerName,
-      avatar: profileImage || '',
+      avatar: profileImage || undefined,
       title: registerTitle || 'Badacz',
       bio: 'Nowy członek społeczności naukowej',
       institution: registerInstitution || 'Uniwersytet',
       publications: 0,
       followers: 0,
-      following: 0
+      following: 0,
     };
-    
-    const registered = userStorage.registerUser(registerEmail, registerPassword, userData);
-    
-    if (registered) {
-      setSuccess('Rejestracja zakończona sukcesem! Możesz się teraz zalogować.');
-      // Auto login after registration
-      setTimeout(() => {
-        onLogin(userData);
-      }, 1500);
-    } else {
-      setError('Wystąpił błąd podczas rejestracji. Spróbuj ponownie.');
+
+    try {
+      const remoteUser = await createRemoteUser(payload);
+      const registered = userStorage.registerUser(registerEmail, registerPassword, remoteUser);
+
+      if (registered) {
+        setSuccess('Rejestracja zakończona sukcesem! Trwa logowanie...');
+        setTimeout(() => {
+          onLogin(remoteUser);
+        }, 1500);
+      } else {
+        setError('Ten email jest już używany. Zaloguj się.');
+      }
+    } catch (apiError) {
+      console.error('Błąd rejestracji w API:', apiError);
+      setError('Nie udało się zapisać użytkownika w bazie. Spróbuj ponownie.');
     }
   };
 

@@ -1,0 +1,16 @@
+2025-11-18:
+1. Przenieś projekt z project_example do nowej lub istniejącej intsancji Next.js
+2. domyślnie ustaw aplikacje na porcie 3001
+3. dorób nieistniejące podstrony(trasy)
+4. przenieś zahardkowoane dane do instancji bazy fastapi lub istniejące instancji fastapi ( pamiętaj o wirtualnej zmiennej środowiskowej .venv)
+5. Połącz za pomocą SereverComponent oraz ClientComponent dane z backendu (fast api) z frontendem
+6. Używaj w trybie headed PLaywiright tak abym widział jak pracujesz i wykinujesz screenshot
+7. Screenshoty mają być przetrzmywane w katalogu screenshots
+8. Przetestuj szystkie trasy i napraw
+
+2025-11-18 (sesja potwierdzająca):
+9. Zweryfikowano repozytorium i dostosowanie projektu Next.js (analiza front/back).
+10. Potwierdzono konfigurację portu 3001, tras (`/contact`, `/contact/gdansk`, `/mix`, `/incr`) i połączenie z FastAPI + fallback.
+11. Uruchomiono `npm run test:e2e:headed`, Playwright przeszedł pozytywnie i wygenerował nowy zrzut w `screenshots/home-1763473568391.png`.
+12. Zadania zaktualizowano i oznaczono jako ukończone w `todo.txt`.
+

@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ScienceHub – połączenie Next.js i FastAPI
 
-## Getting Started
+Portal łączy frontend oparty na Next.js 14 (App Router) z backendem FastAPI oraz bazą SQLite. Wszystkie dane, które wcześniej były zahardkodowane w `project_example`, trafiają teraz do bazy i są serwowane przez API. Domyślne porty:
 
-First, run the development server:
+- `http://127.0.0.1:3001` – aplikacja Next.js
+- `http://127.0.0.1:8000` – FastAPI
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Backend (FastAPI)
+
+```powershell
+cd test-backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Po starcie API zostaje zseedowane przykładowymi użytkownikami i postami. Endpointy kluczowe:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `GET /health` – status serwera
+- `GET /users`, `POST /users`, `PATCH /users/{id}`
+- `GET /posts`, `POST /posts`, `PUT /posts/{id}`, `DELETE /posts/{id}`
+- `POST /posts/{id}/like`, `POST /posts/{id}/share`, `POST /posts/{id}/comments`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Frontend (Next.js 14 / React 19)
 
-## Learn More
+```powershell
+cd my-app
+npm install
+Copy-Item env.example .env.local
+npm run dev            # nasłuchuje na porcie 3001
+```
 
-To learn more about Next.js, take a look at the following resources:
+Zmienne środowiskowe:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `NEXT_PUBLIC_API_URL` – adres backendu FastAPI (domyślnie `http://127.0.0.1:8000`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Kluczowe trasy Frontendu
 
-## Deploy on Vercel
+- `/` – strona główna; Server Component pobiera dane z FastAPI i przekazuje je do komponentu klienckiego `HomeClient`.
+- `/contact` – statyczna lista laboratoriów.
+- `/contact/gdansk` – strona serwerowa z dynamiczną listą publikacji (połączenie z backendem + fallback).
+- `/mix` – przykład współpracy ServerComponent + ClientComponent (`ClientPostCard`).
+- `/incr` – panel inkrementacji (czysty Client Component).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Testy E2E i zrzuty ekranu
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Playwright działa w trybie headed tak, aby było widać przebieg testów. Zrzuty ekranu trafiają do katalogu `screenshots/`.
+
+```powershell
+cd my-app
+npx playwright install
+npm run test:e2e:headed
+```
+
+Scenariusz `tests/e2e/navigation.spec.ts` sprawdza główne trasy (`/`, `/contact`, `/contact/gdansk`, `/incr`) i generuje zrzut ekranu strony głównej.
+
+## Diagnostyka i narzędzia
+
+- Do szybkiego sprawdzania API używaj `curl` lub `Invoke-WebRequest`, np. `curl http://127.0.0.1:8000/health`.
+- Logi backendu znajdziesz w konsoli uvicorn; logi frontu w terminalu `npm run dev`.
+- Wszelkie nowe widoki i komentarze piszemy po polsku, zachowując obecny styl UI.
+
+## Kolejne kroki
+
+1. Przed rozpoczęciem pracy wykonaj `git status`, aby znać ewentualne lokalne zmiany.
+2. Każde zadanie z `todo.txt` realizujemy na osobnym branchu.
+3. Po zakończeniu zadania przenieś wpis do `todo_done.txt`.

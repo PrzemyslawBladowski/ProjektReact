@@ -1,6 +1,7 @@
 // Definicje typów dla aplikacji ScienceHub
 
 export interface User {
+  id: number;
   name: string;
   avatar?: string;
   title: string;
