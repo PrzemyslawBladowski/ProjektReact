@@ -4,8 +4,8 @@ import path from "node:path";
 
 const screenshotDir = path.resolve(__dirname, "../../../screenshots");
 
-test.describe("Nawigacja portalu", () => {
-  test("powinna obsługiwać kluczowe trasy i wykonać zrzut ekranu", async ({ page, viewport }) => {
+test.describe("Nawigacja portalu - testy RWD", () => {
+  test("powinna obsługiwać kluczowe trasy i wykonać zrzut ekranu na wszystkich urządzeniach", async ({ page, viewport }) => {
     if (!fs.existsSync(screenshotDir)) {
       fs.mkdirSync(screenshotDir, { recursive: true });
     }
