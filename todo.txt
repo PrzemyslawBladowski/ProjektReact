@@ -1,0 +1,8 @@
+1. Przenieś projekt z project_example do nowej lub istniejącej intsancji Next.js
+2. domyślnie ustaw aplikacje na porcie 3001
+3. dorób nieistniejące podstrony(trasy)
+4. przenieś zahardkowoane dane do instancji bazy fastapi lub istniejące instancji fastapi ( pamiętaj o wirtualnej zmiennej środowiskowej .venv)
+5. Połącz za pomocą SereverComponent oraz ClientComponent dane z backendu (fast api) z frontendem
+6. Używaj w trybie headed PLaywiright tak abym widział jak pracujesz i wykinujesz screenshot
+7.Screenshoty mają być przetrzmywane w katalogu screenshots
+8. Przetestuj szystkie trasy i napraw 

@@ -1,13 +1,13 @@
-'use client';
-
 import { useState, useMemo } from 'react';
 import { Header } from './components/Header';
 import { CreatePost } from './components/CreatePost';
 import { PostFeed } from './components/PostFeed';
 import { UserProfile } from './components/UserProfile';
 import { AuthScreen } from './components/AuthScreen';
-import { Post, User } from '../types';
-import { censorProfanity } from '../lib/profanityFilter';
+import { Button } from './components/ui/button';
+import { LogOut } from 'lucide-react';
+import { Post, User } from './types';
+import { censorProfanity } from './lib/profanityFilter';
 
 // Przykładowe dane użytkowników z rozszerzonymi profilami
 const users: User[] = [
@@ -90,7 +90,7 @@ const initialPosts: Post[] = [
   }
 ];
 
-export default function Home() {
+export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showAuth, setShowAuth] = useState(false);
   const [posts, setPosts] = useState<Post[]>(initialPosts);

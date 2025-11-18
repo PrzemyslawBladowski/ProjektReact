@@ -1,16 +1,15 @@
-'use client';
-
 import { useState, useMemo } from 'react';
 import { Header } from './components/Header';
 import { CreatePost } from './components/CreatePost';
 import { PostFeed } from './components/PostFeed';
 import { UserProfile } from './components/UserProfile';
 import { AuthScreen } from './components/AuthScreen';
-import { Post, User } from '../types';
-import { censorProfanity } from '../lib/profanityFilter';
+import { Button } from './components/ui/button';
+import { LogOut } from 'lucide-react';
+import { censorProfanity } from './lib/profanityFilter';
 
 // Przykładowe dane użytkowników z rozszerzonymi profilami
-const users: User[] = [
+const users = [
   {
     name: 'Dr Anna Kowalska',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
@@ -44,7 +43,7 @@ const users: User[] = [
 ];
 
 // Przykładowe dane postów naukowych
-const initialPosts: Post[] = [
+const initialPosts = [
   {
     id: '1',
     author: users[0],
@@ -90,15 +89,15 @@ const initialPosts: Post[] = [
   }
 ];
 
-export default function Home() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+export default function App() {
+  const [currentUser, setCurrentUser] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [posts, setPosts] = useState(initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [followedUsers, setFollowedUsers] = useState<Set<string>>(new Set());
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [followedUsers, setFollowedUsers] = useState(new Set());
+  const [likedPosts, setLikedPosts] = useState(new Set());
   const [searchFilters, setSearchFilters] = useState({
     query: '',
     category: 'all',
@@ -108,18 +107,18 @@ export default function Home() {
   
   // Get all unique tags from posts
   const allTags = useMemo(() => {
-    const tagSet = new Set<string>();
+    const tagSet = new Set();
     posts.forEach(post => {
       post.tags.forEach(tag => tagSet.add(tag));
     });
     return Array.from(tagSet);
   }, [posts]);
 
-  const handleCreatePost = (content: string, tags: string[], images: string[]) => {
+  const handleCreatePost = (content, tags, images) => {
     const censoredContent = censorProfanity(content);
-    const newPost: Post = {
+    const newPost = {
       id: Date.now().toString(),
-      author: currentUser!,
+      author: currentUser,
       content: censoredContent,
       timestamp: new Date(),
       likes: 0,
@@ -131,11 +130,11 @@ export default function Home() {
     setPosts([newPost, ...posts]);
   };
 
-  const handleDeletePost = (postId: string) => {
+  const handleDeletePost = (postId) => {
     setPosts(posts.filter(post => post.id !== postId));
   };
 
-  const handleEditPost = (postId: string, newContent: string, newTags: string[]) => {
+  const handleEditPost = (postId, newContent, newTags) => {
     const censoredContent = censorProfanity(newContent);
     setPosts(posts.map(post => 
       post.id === postId 
@@ -144,7 +143,7 @@ export default function Home() {
     ));
   };
 
-  const handleLike = (postId: string) => {
+  const handleLike = (postId) => {
     const newLikedPosts = new Set(likedPosts);
     
     if (newLikedPosts.has(postId)) {
@@ -168,7 +167,7 @@ export default function Home() {
     setLikedPosts(newLikedPosts);
   };
 
-  const handleComment = (postId: string, comment: string) => {
+  const handleComment = (postId, comment) => {
     const censoredComment = censorProfanity(comment);
     setPosts(posts.map(post =>
       post.id === postId
@@ -178,7 +177,7 @@ export default function Home() {
               ...post.comments,
               {
                 id: Date.now().toString(),
-                author: currentUser!,
+                author: currentUser,
                 content: censoredComment,
                 timestamp: new Date()
               }
@@ -188,7 +187,7 @@ export default function Home() {
     ));
   };
 
-  const handleShare = (postId: string) => {
+  const handleShare = (postId) => {
     setPosts(posts.map(post =>
       post.id === postId
         ? { ...post, shares: post.shares + 1 }
@@ -196,12 +195,12 @@ export default function Home() {
     ));
   };
 
-  const handleViewProfile = (user: User) => {
+  const handleViewProfile = (user) => {
     if (!currentUser) return; // Prevent action if not logged in
     setSelectedUser(user);
   };
 
-  const handleToggleFollow = (user: User) => {
+  const handleToggleFollow = (user) => {
     const userName = user.name;
     const newFollowedUsers = new Set(followedUsers);
     
@@ -214,7 +213,7 @@ export default function Home() {
     setFollowedUsers(newFollowedUsers);
   };
 
-  const handleUpdateProfile = (updates: Partial<User>) => {
+  const handleUpdateProfile = (updates) => {
     if (currentUser) {
       // Censor bio if it's being updated
       const censoredUpdates = { ...updates };
@@ -234,7 +233,7 @@ export default function Home() {
     }
   };
 
-  const handleTagToggle = (tag: string) => {
+  const handleTagToggle = (tag) => {
     setSelectedTags(prev =>
       prev.includes(tag)
         ? prev.filter(t => t !== tag)
@@ -242,7 +241,7 @@ export default function Home() {
     );
   };
 
-  const handleSearch = (filters: typeof searchFilters) => {
+  const handleSearch = (filters) => {
     setSearchFilters(filters);
   };
 
@@ -253,7 +252,7 @@ export default function Home() {
     setShowAuth(false);
   };
 
-  const handleLogin = (user: User) => {
+  const handleLogin = (user) => {
     setCurrentUser(user);
     setShowAuth(false);
   };
@@ -281,7 +280,7 @@ export default function Home() {
 
     // Category filter
     if (searchFilters.category !== 'all') {
-      const categoryMap: Record<string, string[]> = {
+      const categoryMap = {
         physics: ['Fizyka', 'Fizyka Kwantowa'],
         biology: ['Biologia', 'Biotechnologia'],
         chemistry: ['Chemia'],
@@ -298,7 +297,7 @@ export default function Home() {
     // Date range filter
     if (searchFilters.dateRange !== 'all') {
       const now = new Date();
-      const ranges: Record<string, number> = {
+      const ranges = {
         today: 1,
         week: 7,
         month: 30,

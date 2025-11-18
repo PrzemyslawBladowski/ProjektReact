@@ -1,0 +1,20 @@
+1. Przeanalizuj projekt na początku pracy
+2. Sprawdź pliki todo i todo_done, aby wiedzieć co jest do zrobienia, a co już wykonano
+3. Ponownie przeanalizuj projekt z uwzględnieniem wykonanych zadań
+4. Zweryfikuj repozytorium zdalne z katalogu głównego projektu
+5. Wprowadzaj zmiany zarówno w backendzie, jak i frontendzie
+6. Testuj lokalnie za pomocą curl i innych narzędzi – poprawiaj błędy aż do skutku
+7. Testuj trasy i funkcjonalności przy użyciu Playwrighta w trybie headed: npm run test:e2e:headed
+8. Przed rozpoczęciem pracy zapisz aktualny stan repozytorium – na wypadek potrzeby cofnięcia
+9. Każde zadanie z todo realizuj na osobnym branchu: wykonaj, przetestuj, popraw, scal
+10. Upewnij się, że wszystko działa po stronie frontu i backendu
+11. Jeśli tworzysz obiekty z id, muszą być zsynchronizowane między frontendem i backendem
+12. Widoki frontu i backendu umieszczaj w katalogach: front, backend/next-fastapi/logs/front, backend/
+13. Skup się na logach przy naprawie błędów
+14. Zapisuj refleksje i reakcje na błędy – czy się pojawiły i jak je rozwiązałeś
+15. Masz dostęp do: genial CLI, Ollama (sprawdź wersję), Claude – możesz z nich korzystać
+16. Kod ma być pisany po polsku, z polskimi komentarzami – unikaj angielskiego
+17. Po wykonaniu zadania przenieś je do todo_done.txt w katalogu głównym
+18. Twórz kod z testami pod RWD – dla każdego urządzenia
+19. Nie zmieniaj obecnego wyglądu – rozwijaj go zgodnie z istniejącym stylem
+20. Nowe widoki i podstrony muszą być spójne ze sobą
