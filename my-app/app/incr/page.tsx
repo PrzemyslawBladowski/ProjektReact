@@ -25,19 +25,19 @@ export default function IncrPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <button
-            className="bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 hover:scale-105 active:scale-95"
             onClick={() => setCount(prev => prev + 1)}
           >
             +1
           </button>
           <button
-            className="bg-blue-100 text-blue-700 py-3 rounded-xl font-semibold hover:bg-blue-200 transition-colors"
+            className="bg-blue-100 text-blue-700 py-3 rounded-xl font-semibold hover:bg-blue-200 transition-all duration-200 hover:scale-105 active:scale-95"
             onClick={() => setCount(0)}
           >
             Reset
           </button>
           <button
-            className="bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+            className="bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all duration-200 hover:scale-105 active:scale-95"
             onClick={() => setCount(prev => prev - 1)}
           >
             -1

@@ -81,9 +81,10 @@ const ACADEMIC_TITLES = [
 interface AuthScreenProps {
   onLogin: (user: User) => void;
   onBack: () => void;
+  defaultTab?: 'login' | 'register';
 }
 
-export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
+export function AuthScreen({ onLogin, onBack, defaultTab = 'login' }: AuthScreenProps) {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [registerName, setRegisterName] = useState('');
@@ -184,11 +185,11 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
           {onBack && (
             <div className="mb-6 flex justify-center animate-fade-in">
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={onBack}
-                className="gap-2 text-gray-600 hover:text-gray-900"
+                className="group gap-2 text-gray-900 font-medium hover:text-gray-900 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors duration-200"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
                 Powrót do strony głównej
               </Button>
             </div>
@@ -196,25 +197,35 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
 
           {/* Logo */}
           <div className="text-center mb-8 animate-scale-in">
-            <div className="inline-flex items-center justify-center bg-blue-600 p-4 rounded-2xl shadow-lg mb-4">
-              <Microscope className="w-12 h-12 text-white" />
+            <div className="inline-flex items-center justify-center bg-blue-600 p-3 rounded-lg mb-4">
+              <Microscope className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-gray-900 text-3xl mb-2">ScienceHub</h1>
-            <p className="text-gray-600">Portal dla pasjonatów nauki</p>
+            <h1 className="text-gray-900 text-4xl font-bold mb-2">ScienceHub</h1>
+            <p className="text-gray-500 text-sm">Portal dla pasjonatów nauki</p>
           </div>
 
-          <Card className="shadow-xl border-0">
-            <CardHeader>
-              <CardTitle>Witaj w społeczności</CardTitle>
-              <CardDescription>
+          <Card className="shadow-xl border border-gray-200 bg-white rounded-2xl overflow-visible">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl font-bold text-gray-900">Witaj w społeczności</CardTitle>
+              <CardDescription className="text-gray-500 text-sm">
                 Zaloguj się lub utwórz nowe konto
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Logowanie</TabsTrigger>
-                  <TabsTrigger value="register">Rejestracja</TabsTrigger>
+            <CardContent className="overflow-visible">
+              <Tabs defaultValue={defaultTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-0.5 h-auto gap-0 mb-4 rounded-xl border-0 shadow-none">
+                  <TabsTrigger 
+                    value="login"
+                    className="bg-transparent border-0 rounded-lg px-3 py-1.5 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-medium text-gray-700 transition-colors duration-200"
+                  >
+                    Logowanie
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="register"
+                    className="bg-transparent border-0 rounded-lg px-3 py-1.5 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-medium text-gray-700 transition-colors duration-200"
+                  >
+                    Rejestracja
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="login">
@@ -226,42 +237,42 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                     )}
                     
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label htmlFor="login-email" className="text-gray-900">Email</Label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="login-email"
                           type="email"
                           placeholder="twoj@email.com"
                           value={loginEmail}
                           onChange={(e) => setLoginEmail(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-gray-50 border-gray-200"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Hasło</Label>
+                      <Label htmlFor="login-password" className="text-gray-900">Hasło</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="login-password"
                           type="password"
                           placeholder="••••••••"
                           value={loginPassword}
                           onChange={(e) => setLoginPassword(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-gray-50 border-gray-200"
                           required
                         />
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full gap-2">
+                    <Button type="submit" className="w-full gap-2 bg-blue-900 hover:bg-blue-800 text-white">
                       Zaloguj się
                     </Button>
 
-                    <p className="text-xs text-gray-500 text-center">
+                    <p className="text-xs text-gray-400 text-center mt-2">
                       Użyj emaila i hasła z rejestracji
                     </p>
                   </form>
@@ -283,7 +294,7 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                     
                     {/* Profile Image Upload */}
                     <div className="space-y-2">
-                      <Label>Zdjęcie profilowe (opcjonalne)</Label>
+                      <Label className="text-gray-900 font-semibold">Zdjęcie profilowe (opcjonalne)</Label>
                       <div className="flex items-center gap-4">
                         <div className="relative">
                           {profileImage ? (
@@ -311,7 +322,7 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                             variant="outline"
                             size="sm"
                             onClick={() => document.getElementById('profile-image-upload')?.click()}
-                            className="w-full"
+                            className="w-full border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-900"
                           >
                             {profileImage ? 'Zmień zdjęcie' : 'Dodaj zdjęcie'}
                           </Button>
@@ -321,7 +332,7 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                               variant="ghost"
                               size="sm"
                               onClick={() => setProfileImage('')}
-                              className="w-full mt-1 text-red-600"
+                              className="w-full mt-1 text-red-600 hover:bg-red-50"
                             >
                               Usuń zdjęcie
                             </Button>
@@ -331,60 +342,60 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="register-name">Imię i nazwisko</Label>
+                      <Label htmlFor="register-name" className="text-gray-900 font-semibold">Imię i nazwisko</Label>
                       <div className="relative">
-                        <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="register-name"
                           type="text"
                           placeholder="Jan Kowalski"
                           value={registerName}
                           onChange={(e) => setRegisterName(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-gray-50 border-gray-200"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
+                      <Label htmlFor="register-email" className="text-gray-900 font-semibold">Email</Label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="register-email"
                           type="email"
                           placeholder="twoj@email.com"
                           value={registerEmail}
                           onChange={(e) => setRegisterEmail(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-gray-50 border-gray-200"
                           required
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Hasło</Label>
+                      <Label htmlFor="register-password" className="text-gray-900 font-semibold">Hasło</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <Input
                           id="register-password"
                           type="password"
                           placeholder="••••••••"
                           value={registerPassword}
                           onChange={(e) => setRegisterPassword(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 bg-gray-50 border-gray-200"
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="register-title">Tytuł naukowy</Label>
+                    <div className="space-y-2 relative z-10">
+                      <Label htmlFor="register-title" className="text-gray-900 font-semibold">Tytuł naukowy</Label>
                       <Select value={registerTitle} onValueChange={setRegisterTitle}>
-                        <SelectTrigger id="register-title">
+                        <SelectTrigger id="register-title" className="bg-gray-50 border-gray-200">
                           <SelectValue placeholder="Wybierz tytuł naukowy" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent position="popper" sideOffset={4} className="z-[9999]">
                           {ACADEMIC_TITLES.map(title => (
                             <SelectItem key={title} value={title}>
                               {title}
@@ -394,13 +405,13 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                       </Select>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="register-institution">Instytucja</Label>
+                    <div className="space-y-2 relative z-10">
+                      <Label htmlFor="register-institution" className="text-gray-900 font-semibold">Instytucja</Label>
                       <Select value={registerInstitution} onValueChange={setRegisterInstitution}>
-                        <SelectTrigger id="register-institution">
+                        <SelectTrigger id="register-institution" className="bg-gray-50 border-gray-200">
                           <SelectValue placeholder="Wybierz instytucję" />
                         </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
+                        <SelectContent position="popper" sideOffset={4} className="max-h-[300px] z-[9999]">
                           {POLISH_UNIVERSITIES.map(institution => (
                             <SelectItem key={institution} value={institution}>
                               {institution}
@@ -410,7 +421,7 @@ export function AuthScreen({ onLogin, onBack }: AuthScreenProps) {
                       </Select>
                     </div>
 
-                    <Button type="submit" className="w-full gap-2">
+                    <Button type="submit" className="w-full gap-2 bg-blue-900 hover:bg-blue-800 text-white">
                       Utwórz konto
                     </Button>
 

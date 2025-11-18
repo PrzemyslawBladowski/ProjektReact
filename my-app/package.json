@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e:headed": "playwright test --headed --project=chromium"
+    "test:e2e:headed": "playwright test --headed --project=desktop-chrome"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Microscope, Filter, X, Hash, User as UserIcon, FileText, LogOut, UserCircle } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
@@ -63,6 +64,7 @@ export function Header({
   onLogout,
   onShowAuth
 }: HeaderProps) {
+  const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
@@ -153,6 +155,10 @@ export function Header({
       dateRange: 'all'
     });
     onSearchChange('');
+    // Resetuj wszystkie tagi - odznacz wszystkie zaznaczone
+    selectedTags.forEach(tag => {
+      onTagToggle(tag);
+    });
     onSearch({
       query: '',
       category: 'all',
@@ -178,16 +184,19 @@ export function Header({
     selectedTags.length > 0;
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 flex-shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <div className="bg-blue-600 p-2 rounded-lg">
               <Microscope className="w-6 h-6 text-white" />
             </div>
-            <span className="text-blue-900 hidden sm:block">ScienceHub</span>
-          </div>
+            <span className="text-blue-700 font-normal hidden sm:block">ScienceHub</span>
+          </button>
 
           {/* Search Bar with Filters */}
           <div className="flex-1 max-w-2xl" ref={searchRef}>
@@ -213,7 +222,7 @@ export function Header({
                         setShowSuggestions(false);
                       }
                     }}
-                    className="pl-10 pr-4"
+                    className="pl-10 pr-4 bg-gray-100 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                   
                   {/* Search Suggestions Dropdown */}
@@ -249,12 +258,11 @@ export function Header({
                   )}
                 </div>
                 <Button
-                  variant={showFilters ? "default" : "outline"}
                   size="icon"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="relative"
+                  className="relative bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 shadow-none"
                 >
-                  <Filter className="w-5 h-5" />
+                  <Filter className="w-5 h-5 text-gray-700" />
                   {hasActiveFilters && (
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
                   )}
@@ -263,13 +271,14 @@ export function Header({
 
               {/* Advanced Filters Dropdown */}
               {showFilters && (
-                <div className="bg-white border rounded-lg shadow-lg p-4 space-y-4 absolute left-0 right-0 mt-2 z-50">
+                <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 space-y-4 absolute left-0 right-0 mt-2 z-50">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-gray-900">Filtry wyszukiwania</h3>
+                    <h3 className="text-gray-900 font-semibold">Filtry wyszukiwania</h3>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowFilters(false)}
+                      className="text-gray-900 hover:bg-gray-100"
                     >
                       <X className="w-4 h-4" />
                     </Button>
@@ -277,12 +286,12 @@ export function Header({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <Label className="text-sm mb-1 block">Kategoria</Label>
+                      <Label className="text-sm mb-1 block text-gray-900">Kategoria</Label>
                       <Select
                         value={filters.category}
                         onValueChange={(value) => setFilters({ ...filters, category: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-gray-50 border-gray-200">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -298,12 +307,12 @@ export function Header({
                     </div>
 
                     <div>
-                      <Label className="text-sm mb-1 block">Sortuj według</Label>
+                      <Label className="text-sm mb-1 block text-gray-900">Sortuj według</Label>
                       <Select
                         value={filters.sortBy}
                         onValueChange={(value) => setFilters({ ...filters, sortBy: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-gray-50 border-gray-200">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -315,12 +324,12 @@ export function Header({
                     </div>
 
                     <div>
-                      <Label className="text-sm mb-1 block">Zakres dat</Label>
+                      <Label className="text-sm mb-1 block text-gray-900">Zakres dat</Label>
                       <Select
                         value={filters.dateRange}
                         onValueChange={(value) => setFilters({ ...filters, dateRange: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-gray-50 border-gray-200">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -337,31 +346,31 @@ export function Header({
                   {/* Tag Filters */}
                   {availableTags.length > 0 && (
                     <div>
-                      <Label className="text-sm mb-2 block">Filtruj po tagach</Label>
+                      <Label className="text-sm mb-2 block text-gray-900">Filtruj po tagach</Label>
                       <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                         {availableTags.map(tag => (
-                          <Badge
+                          <button
                             key={tag}
-                            variant={selectedTags.includes(tag) ? 'default' : 'outline'}
-                            className="cursor-pointer hover:opacity-80"
                             onClick={() => onTagToggle(tag)}
+                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 ${
+                              selectedTags.includes(tag)
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-blue-200 text-blue-800'
+                            }`}
                           >
                             {tag}
-                            {selectedTags.includes(tag) && (
-                              <X className="w-3 h-3 ml-1" />
-                            )}
-                          </Badge>
+                          </button>
                         ))}
                       </div>
                     </div>
                   )}
 
-                  <div className="flex gap-2 pt-2 border-t">
-                    <Button onClick={handleApplyFilters} className="flex-1">
+                  <div className="flex gap-2 pt-2 border-t border-gray-200">
+                    <Button onClick={handleApplyFilters} className="flex-1 bg-gray-900 hover:bg-gray-800 text-white">
                       <Search className="w-4 h-4 mr-2" />
                       Szukaj
                     </Button>
-                    <Button onClick={handleResetFilters} variant="outline">
+                    <Button onClick={handleResetFilters} variant="outline" className="bg-white border-gray-300 text-gray-900 hover:bg-gray-50">
                       Resetuj
                     </Button>
                   </div>
@@ -375,7 +384,7 @@ export function Header({
             {currentUser ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none">
+                  <button className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-0">
                     <div className="text-right hidden md:block">
                       <div className="text-gray-900">{currentUser.name}</div>
                       <div className="text-gray-500 text-sm">{currentUser.title}</div>
@@ -390,38 +399,36 @@ export function Header({
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg">
                   <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{currentUser.name}</p>
+                    <p className="text-sm font-medium text-gray-900">{currentUser.name}</p>
                     <p className="text-xs text-gray-500">{currentUser.title}</p>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onViewProfile?.(currentUser)}>
-                    <UserCircle className="w-4 h-4 mr-2" />
+                  <DropdownMenuSeparator className="bg-gray-200" />
+                  <DropdownMenuItem onClick={() => onViewProfile?.(currentUser)} className="focus:bg-gray-50 text-gray-900">
+                    <UserCircle className="w-4 h-4 mr-2 text-gray-500" />
                     Mój profil
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onLogout} className="text-red-600">
+                  <DropdownMenuSeparator className="bg-gray-200" />
+                  <DropdownMenuItem onClick={onLogout} className="text-red-600 focus:bg-red-50">
                     <LogOut className="w-4 h-4 mr-2" />
                     Wyloguj się
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
+              <div className="flex items-center gap-3">
+                <button
                   onClick={onShowAuth}
-                  className="gap-2"
+                  className="flex items-center gap-2 text-gray-900 hover:text-gray-700 transition-all duration-200 hover:scale-105 active:scale-95"
                 >
-                  <UserCircle className="w-4 h-4" />
-                  Logowanie
-                </Button>
+                  <UserCircle className="w-4 h-4 text-gray-900" />
+                  <span>Logowanie</span>
+                </button>
                 <Button
                   size="sm"
                   onClick={onShowAuth}
-                  className="gap-2"
+                  className="bg-gray-900 hover:bg-gray-800 text-white border-0 shadow-none"
                 >
                   Rejestracja
                 </Button>

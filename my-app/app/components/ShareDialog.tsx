@@ -2,7 +2,9 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
-import { Facebook, Linkedin, Instagram, Link as LinkIcon, Check } from 'lucide-react';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Facebook, Linkedin, Instagram, Link as LinkIcon, Check, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface ShareDialogProps {
@@ -39,18 +41,28 @@ export function ShareDialog({ isOpen, onClose, postContent, postUrl }: ShareDial
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Udostępnij post</DialogTitle>
-          <DialogDescription>
-            Wybierz platformę, na której chcesz udostępnić ten post
-          </DialogDescription>
+      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg p-0 overflow-hidden [&>button]:hidden">
+        <DialogHeader className="bg-white border-b border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-gray-900 font-semibold">Udostępnij post</DialogTitle>
+              <DialogDescription className="text-gray-600 mt-1">
+                Wybierz platformę, na której chcesz udostępnić ten post
+              </DialogDescription>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-gray-900 hover:text-gray-700 transition-all duration-200 hover:scale-110 active:scale-95"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </DialogHeader>
         
-        <div className="space-y-3">
+        <div className="space-y-3 p-6 bg-white">
           <Button
             onClick={shareToFacebook}
-            className="w-full justify-start gap-3 bg-[#1877F2] hover:bg-[#1565C0] text-white"
+            className="w-full justify-start gap-3 bg-[#1877F2] hover:bg-[#1565C0] text-white transition-colors duration-200"
           >
             <Facebook className="w-5 h-5" />
             Udostępnij na Facebook
@@ -58,7 +70,7 @@ export function ShareDialog({ isOpen, onClose, postContent, postUrl }: ShareDial
 
           <Button
             onClick={shareToLinkedIn}
-            className="w-full justify-start gap-3 bg-[#0A66C2] hover:bg-[#084E8F] text-white"
+            className="w-full justify-start gap-3 bg-[#0A66C2] hover:bg-[#084E8F] text-white transition-colors duration-200"
           >
             <Linkedin className="w-5 h-5" />
             Udostępnij na LinkedIn
@@ -66,17 +78,17 @@ export function ShareDialog({ isOpen, onClose, postContent, postUrl }: ShareDial
 
           <Button
             onClick={shareToInstagram}
-            className="w-full justify-start gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white"
+            className="w-full justify-start gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white transition-opacity duration-200"
           >
             <Instagram className="w-5 h-5" />
             Udostępnij na Instagram
           </Button>
 
-          <div className="border-t pt-3 mt-3">
+          <div className="border-t border-gray-200 pt-3 mt-3">
             <Button
               onClick={copyToClipboard}
               variant="outline"
-              className="w-full justify-start gap-3"
+              className="w-full justify-start gap-3 bg-white border-gray-200 text-gray-900 hover:bg-gray-50 transition-colors duration-200"
             >
               {copied ? (
                 <>
@@ -90,10 +102,9 @@ export function ShareDialog({ isOpen, onClose, postContent, postUrl }: ShareDial
                 </>
               )}
             </Button>
-          </div>
-
-          <div className="bg-gray-50 p-3 rounded text-xs text-gray-600 break-all">
-            {postUrl}
+            <div className="bg-gray-50 border border-gray-200 p-3 rounded-lg mt-3">
+              <p className="text-xs text-gray-600 break-all">{postUrl}</p>
+            </div>
           </div>
         </div>
       </DialogContent>

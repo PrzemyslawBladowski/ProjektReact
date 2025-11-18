@@ -324,7 +324,7 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
       <main className="max-w-2xl mx-auto px-4 py-6">
         {currentUser && (
           <div className="animate-slide-up">
-            <CreatePost onCreatePost={handleCreatePost} />
+            <CreatePost onCreatePost={handleCreatePost} availableTags={allTags} />
           </div>
         )}
 
@@ -357,6 +357,15 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
           onToggleFollow={() => handleToggleFollow(selectedUser)}
           likedPosts={likedPosts}
           onUpdateProfile={handleUpdateProfile}
+          followedUsers={selectedUser.id === currentUser.id 
+            ? posts
+                .map(post => post.author)
+                .filter((author, index, self) => 
+                  followedUsers.has(author.id) && 
+                  self.findIndex(a => a.id === author.id) === index
+                )
+            : []}
+          onViewProfile={handleViewProfile}
         />
       )}
     </div>

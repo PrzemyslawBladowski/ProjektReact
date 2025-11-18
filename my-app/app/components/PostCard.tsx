@@ -94,7 +94,7 @@ export function PostCard({
     typeof window !== 'undefined' ? `${window.location.origin}/post/${post.id}` : '';
 
   return (
-    <Card className="mb-4 hover:shadow-lg transition-shadow duration-200">
+    <Card className="mb-4 hover:shadow-lg transition-shadow duration-200 border border-gray-200 shadow-sm">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3 flex-1">
@@ -116,12 +116,12 @@ export function PostCard({
               <button
                 onClick={() => !isReadOnly && onViewProfile?.(post.author)}
                 disabled={isReadOnly}
-                className={`text-gray-900 ${!isReadOnly ? 'hover:underline' : 'cursor-default'}`}
+                className={`text-gray-900 font-semibold ${!isReadOnly ? 'hover:underline' : 'cursor-default'}`}
               >
                 {post.author.name}
               </button>
-              <div className="text-gray-500 text-sm">{post.author.title}</div>
-              <div className="text-gray-400 text-sm">
+              <div className="text-gray-500 text-sm mt-0.5">{post.author.title}</div>
+              <div className="text-gray-400 text-xs mt-0.5">
                 {formatDistanceToNow(post.timestamp, { addSuffix: true, locale: pl })}
               </div>
             </div>
@@ -191,7 +191,7 @@ export function PostCard({
                       {tag}
                       <button
                         onClick={() => handleRemoveTag(tag)}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
+                        className="hover:bg-blue-200 rounded-full p-0.5 transition-all duration-200 hover:scale-110 active:scale-95"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -231,18 +231,18 @@ export function PostCard({
                     key={index}
                     src={image}
                     alt={`Post image ${index + 1}`}
-                    className="w-full h-64 object-cover rounded-lg"
+                    className="w-full h-auto object-cover rounded-lg"
                   />
                 ))}
               </div>
             )}
             
             {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mt-4">
                 {post.tags.map(tag => (
                   <span
                     key={tag}
-                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                    className="bg-blue-200 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium"
                   >
                     #{tag}
                   </span>
@@ -255,7 +255,7 @@ export function PostCard({
 
       <CardFooter className="flex flex-col items-start gap-4">
         {isReadOnly ? (
-          <div className="w-full text-center py-2 bg-gray-50 rounded-lg">
+          <div className="w-full text-center py-2 bg-gray-100 rounded-lg">
             <p className="text-sm text-gray-600">
               Zaloguj się, aby polubić, komentować i udostępniać posty
             </p>

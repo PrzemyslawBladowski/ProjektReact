@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { User as UserIcon, Camera } from 'lucide-react';
+import { X, Camera } from 'lucide-react';
 import { User } from '../../types';
 
 interface EditProfileDialogProps {
@@ -38,17 +38,27 @@ export function EditProfileDialog({ isOpen, onClose, user, onSave }: EditProfile
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edytuj profil</DialogTitle>
-          <DialogDescription>Edytuj swoje informacje profilowe</DialogDescription>
+      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-lg p-0 overflow-hidden [&>button]:hidden">
+        <DialogHeader className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-white font-semibold">Edytuj profil</DialogTitle>
+              <DialogDescription className="text-white/90 mt-1">Edytuj swoje informacje profilowe</DialogDescription>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-white/80 transition-all duration-200 hover:scale-110 active:scale-95"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </DialogHeader>
         
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 p-6 bg-white">
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <Avatar className="w-24 h-24">
+              <Avatar className="w-24 h-24 border-4 border-blue-100 bg-white">
                 {avatar ? (
                   <AvatarImage src={avatar} alt={user.name} />
                 ) : null}
@@ -78,22 +88,22 @@ export function EditProfileDialog({ isOpen, onClose, user, onSave }: EditProfile
 
           {/* Bio */}
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <Label htmlFor="bio" className="text-gray-900 font-semibold">Bio</Label>
             <Textarea
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Opowiedz coś o sobie..."
-              className="resize-none"
+              placeholder="Nowy członek społeczności naukowej"
+              className="resize-none bg-gray-50 border-[0.5px] border-gray-200"
               rows={4}
             />
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <Button variant="outline" onClick={onClose} className="flex-1">
+          <div className="flex gap-2 pt-4 justify-end">
+            <Button variant="outline" onClick={onClose} className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50">
               Anuluj
             </Button>
-            <Button onClick={handleSave} className="flex-1">
+            <Button onClick={handleSave} className="bg-white border border-gray-200 text-gray-900 hover:bg-gray-50">
               Zapisz zmiany
             </Button>
           </div>
