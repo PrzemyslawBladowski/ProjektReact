@@ -11,13 +11,24 @@ export default defineConfig({
     baseURL: process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PORT}`,
     headless: false,
     trace: "off",
-    viewport: { width: 1280, height: 720 },
     video: "off",
   },
   projects: [
     {
-      name: "chromium",
+      name: "desktop-chrome",
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },
+    },
+    {
+      name: "mobile-safari",
+      use: { ...devices["iPhone 12"] },
+    },
+    {
+      name: "tablet",
+      use: { ...devices["iPad Pro"] },
     },
   ],
   webServer: {

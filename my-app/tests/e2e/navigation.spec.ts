@@ -5,15 +5,24 @@ import path from "node:path";
 const screenshotDir = path.resolve(__dirname, "../../../screenshots");
 
 test.describe("Nawigacja portalu", () => {
-  test("powinna obsługiwać kluczowe trasy i wykonać zrzut ekranu", async ({ page }) => {
+  test("powinna obsługiwać kluczowe trasy i wykonać zrzut ekranu", async ({ page, viewport }) => {
     if (!fs.existsSync(screenshotDir)) {
       fs.mkdirSync(screenshotDir, { recursive: true });
     }
 
+    // Określenie typu urządzenia na podstawie viewport
+    const deviceType = viewport?.width 
+      ? viewport.width < 768 ? "mobile" 
+        : viewport.width < 1024 ? "tablet" 
+        : "desktop"
+      : "desktop";
+    
+    const deviceName = viewport?.width ? `${deviceType}-${viewport.width}x${viewport.height}` : "desktop";
+
     await page.goto("/");
     await expect(page.getByText("ScienceHub")).toBeVisible();
 
-    const screenshotPath = path.join(screenshotDir, `home-${Date.now()}.png`);
+    const screenshotPath = path.join(screenshotDir, `home-${deviceName}-${Date.now()}.png`);
     await page.screenshot({ path: screenshotPath, fullPage: true });
 
     await page.goto("/contact");
@@ -24,6 +33,15 @@ test.describe("Nawigacja portalu", () => {
 
     await page.goto("/incr");
     await expect(page.getByText(/Aktualna wartość/i)).toBeVisible();
+
+    // Test responsywności - sprawdzenie czy elementy są widoczne na danym urządzeniu
+    if (viewport && viewport.width < 768) {
+      // Na mobile sprawdzamy czy menu jest dostępne (hamburger menu)
+      const menuButton = page.locator('button[aria-label*="menu"], button[aria-label*="Menu"], [data-testid*="menu"]').first();
+      if (await menuButton.count() > 0) {
+        await expect(menuButton).toBeVisible();
+      }
+    }
   });
 });
 
