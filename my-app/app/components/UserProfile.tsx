@@ -206,9 +206,9 @@ export function UserProfile({
                 </h2>
                 <div className="animate-stagger">
                   {posts.length > 0 ? (
-                    posts.map(post => (
+                    posts.map((post, index) => (
                       <PostCard
-                        key={post.id}
+                        key={`profile-${post.id}-${index}`}
                         post={post}
                         currentUser={currentUser}
                         onLike={onLike}

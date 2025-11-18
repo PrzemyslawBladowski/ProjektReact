@@ -25,7 +25,18 @@ interface HomeClientProps {
 export function HomeClient({ initialPosts }: HomeClientProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showAuth, setShowAuth] = useState(false);
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  // Usuń duplikaty postów na podstawie ID
+  const uniqueInitialPosts = useMemo(() => {
+    const seen = new Set<string>();
+    return initialPosts.filter(post => {
+      if (seen.has(post.id)) {
+        return false;
+      }
+      seen.add(post.id);
+      return true;
+    });
+  }, [initialPosts]);
+  const [posts, setPosts] = useState<Post[]>(uniqueInitialPosts);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -54,8 +65,23 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
   };
 
   const showError = (message: string, error?: unknown) => {
-    console.error(message, error);
-    setStatusMessage(message);
+    // Use the error message if it's more specific than the generic message
+    const errorMessage = error instanceof Error ? error.message : String(error || '');
+    const displayMessage = errorMessage && errorMessage !== message ? errorMessage : message;
+    
+    // Only log to console in development, and use warn for expected errors (like API unavailable)
+    if (process.env.NODE_ENV === 'development') {
+      const isApiUnavailable = displayMessage.includes('API niedostępne');
+      if (isApiUnavailable) {
+        console.warn(displayMessage);
+      } else if (error) {
+        console.error(displayMessage, error);
+      } else {
+        console.error(displayMessage);
+      }
+    }
+    
+    setStatusMessage(displayMessage);
     setTimeout(() => setStatusMessage(null), 5000);
   };
 
@@ -73,9 +99,19 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
         tags,
         images,
       });
-      setPosts(prev => [newPost, ...prev]);
+      setPosts(prev => {
+        // Sprawdź czy post o tym ID już istnieje
+        const exists = prev.some(p => p.id === newPost.id);
+        if (exists) {
+          // Jeśli istnieje, zaktualizuj go zamiast dodać duplikat
+          return prev.map(p => p.id === newPost.id ? newPost : p);
+        }
+        return [newPost, ...prev];
+      });
     } catch (error) {
-      showError('Nie udało się utworzyć posta.', error);
+      // Use the error message directly if available, otherwise use generic message
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się utworzyć posta.';
+      showError(errorMessage, error);
     }
   };
 
@@ -89,7 +125,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
         return cloned;
       });
     } catch (error) {
-      showError('Nie udało się usunąć posta.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się usunąć posta.';
+      showError(errorMessage, error);
     }
   };
 
@@ -102,7 +139,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
       });
       updatePostInList(updatedPost);
     } catch (error) {
-      showError('Nie udało się zaktualizować posta.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się zaktualizować posta.';
+      showError(errorMessage, error);
     }
   };
 
@@ -129,7 +167,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
         return cloned;
       });
     } catch (error) {
-      showError('Nie udało się zmienić stanu polubienia.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się zmienić stanu polubienia.';
+      showError(errorMessage, error);
     }
   };
 
@@ -148,7 +187,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
       });
       updatePostInList(updated);
     } catch (error) {
-      showError('Nie udało się dodać komentarza.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się dodać komentarza.';
+      showError(errorMessage, error);
     }
   };
 
@@ -157,7 +197,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
       const updated = await registerRemoteShare({ postId });
       updatePostInList(updated);
     } catch (error) {
-      showError('Nie udało się zarejestrować udostępnienia.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się zarejestrować udostępnienia.';
+      showError(errorMessage, error);
     }
   };
 
@@ -201,7 +242,8 @@ export function HomeClient({ initialPosts }: HomeClientProps) {
         setSelectedUser(updatedUser);
       }
     } catch (error) {
-      showError('Nie udało się zaktualizować profilu.', error);
+      const errorMessage = error instanceof Error ? error.message : 'Nie udało się zaktualizować profilu.';
+      showError(errorMessage, error);
     }
   };
 

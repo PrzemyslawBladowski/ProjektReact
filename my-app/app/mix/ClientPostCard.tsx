@@ -97,9 +97,9 @@ export function ClientPostCard({ posts }: ClientPostCardProps) {
       <aside className="bg-white rounded-3xl shadow p-6 border border-gray-100">
         <p className="text-sm uppercase text-gray-500 tracking-widest">Posty w kolejce</p>
         <div className="mt-4 space-y-3">
-          {posts.map(post => (
+          {posts.map((post, index) => (
             <button
-              key={post.id}
+              key={`mix-${post.id}-${index}`}
               onClick={() => setActivePostId(post.id)}
               className={`w-full text-left p-4 rounded-2xl border transition-all ${
                 post.id === activePost.id

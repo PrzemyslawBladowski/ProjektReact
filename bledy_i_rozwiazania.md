@@ -148,14 +148,96 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/posts/1/comments" -Method POST -Bo
 
 ---
 
+### Błąd 4: Nieczytelne komunikaty błędów walidacji FastAPI
+
+**Opis błędu:**
+- Błędy walidacji z FastAPI były wyświetlane jako surowy JSON
+- Przykład: `{"detail":[{"type":"string_too_short","loc":["body","content"],"msg":"String should have at least 5 characters","input":"zxzx","ctx":{"min_length":5}}]}`
+- Użytkownik nie mógł zrozumieć, co poszło nie tak
+
+**Gdzie wystąpił:**
+- Plik: `my-app/lib/api.ts`
+- Funkcja: `handleResponse`
+- Wszystkie operacje API, które zwracają błędy walidacji (POST, PUT, PATCH)
+
+**Jak został wykryty:**
+- Próba utworzenia posta z treścią krótszą niż 5 znaków
+- W konsoli i UI pojawił się nieczytelny JSON zamiast komunikatu błędu
+
+**Przyczyna:**
+- FastAPI zwraca błędy walidacji w formacie JSON z tablicą `detail`
+- Funkcja `handleResponse` nie parsowała tych błędów, tylko zwracała surowy tekst
+
+**Rozwiązanie:**
+1. Dodano interfejsy TypeScript dla błędów FastAPI (`FastAPIValidationError`, `FastAPIErrorDetail`)
+2. Utworzono funkcję `parseValidationError` do tłumaczenia błędów walidacji na czytelne komunikaty po polsku
+3. Utworzono funkcję `parseFastAPIError` do parsowania struktury błędów FastAPI
+4. Zaktualizowano `handleResponse` aby parsować błędy walidacji i wyświetlać czytelne komunikaty
+
+**Kod przed naprawą:**
+```typescript
+const handleResponse = async <T>(response: Response): Promise<T> => {
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Błąd komunikacji z API");
+  }
+  return response.json() as Promise<T>;
+};
+```
+
+**Kod po naprawie:**
+```typescript
+const parseValidationError = (error: FastAPIValidationError): string => {
+  const field = error.loc[error.loc.length - 1] as string;
+  const fieldName = field === "content" ? "treść" : 
+                   field === "author_id" ? "autor" :
+                   // ... mapowanie innych pól
+                   field;
+
+  if (error.type === "string_too_short") {
+    const minLength = error.ctx?.min_length as number | undefined;
+    return minLength 
+      ? `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} musi mieć co najmniej ${minLength} znaków.`
+      : `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} jest za krótkie.`;
+  }
+  // ... obsługa innych typów błędów
+};
+
+const handleResponse = async <T>(response: Response): Promise<T> => {
+  const text = await response.text();
+  
+  if (!response.ok) {
+    // Parsowanie błędów walidacji FastAPI
+    const errorData: FastAPIErrorDetail = JSON.parse(text);
+    const errorMessage = parseFastAPIError(errorData);
+    throw new Error(errorMessage);
+  }
+  
+  return JSON.parse(text) as T;
+};
+```
+
+**Weryfikacja:**
+- Błędy walidacji są teraz wyświetlane jako czytelne komunikaty po polsku
+- Przykład: "Treść musi mieć co najmniej 5 znaków." zamiast surowego JSON
+- Wszystkie typy błędów walidacji są obsługiwane (string_too_short, string_too_long, missing, value_error)
+
+**Refleksje:**
+- Ważne jest parsowanie błędów API i wyświetlanie ich w czytelnej formie dla użytkownika
+- Tłumaczenie nazw pól na język polski poprawia UX
+- Obsługa różnych typów błędów walidacji zwiększa użyteczność aplikacji
+
+---
+
 ## Podsumowanie
 
-**Liczba błędów naprawionych:** 3
+**Liczba błędów naprawionych:** 4
 
 **Czas naprawy:**
 - Błąd 1: ~10 minut (znalezienie, analiza, naprawa)
 - Błąd 2: ~5 minut (identyfikacja, rozwiązanie)
 - Błąd 3: ~15 minut (próby różnych rozwiązań, znalezienie optymalnego)
+- Błąd 4: ~20 minut (analiza struktury błędów FastAPI, implementacja parsera, testowanie)
 
 **Wnioski ogólne:**
 1. Ważne jest testowanie importu modułów przed uruchomieniem serwera
@@ -163,4 +245,6 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/posts/1/comments" -Method POST -Bo
 3. Narzędzia testowe powinny być dostosowane do środowiska (PowerShell vs bash)
 4. Fallback mechanism jest kluczowy dla odporności aplikacji
 5. Logi są niezbędne do szybkiego diagnozowania problemów
+6. Błędy API powinny być parsowane i wyświetlane w czytelnej formie dla użytkownika
+7. Tłumaczenie komunikatów błędów na język użytkownika poprawia UX
 

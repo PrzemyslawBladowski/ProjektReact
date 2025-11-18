@@ -28,9 +28,9 @@ export function PostFeed({ posts, currentUser, onLike, onComment, onShare, onDel
 
   return (
     <div className="animate-stagger">
-      {posts.map(post => (
+      {posts.map((post, index) => (
         <PostCard
-          key={post.id}
+          key={`feed-${post.id}-${index}`}
           post={post}
           currentUser={currentUser}
           onLike={onLike}
