@@ -5,7 +5,26 @@ Portal łączy frontend oparty na Next.js 14 (App Router) z backendem FastAPI or
 - `http://127.0.0.1:3001` – aplikacja Next.js
 - `http://127.0.0.1:8000` – FastAPI
 
-## Backend (FastAPI)
+## 🚀 Szybkie uruchomienie (Frontend + Backend)
+
+**Najprostszy sposób - uruchom oba serwery jednocześnie:**
+
+```powershell
+# Z głównego katalogu projektu
+npm run dev:all
+```
+
+Lub bezpośrednio:
+```powershell
+powershell -ExecutionPolicy Bypass -File ./start-dev.ps1
+```
+
+Skrypt automatycznie:
+- Sprawdzi i utworzy środowisko wirtualne dla backendu (jeśli potrzeba)
+- Uruchomi backend FastAPI na porcie 8000 (w osobnym oknie)
+- Uruchomi frontend Next.js na porcie 3001
+
+## Backend (FastAPI) - uruchamianie ręczne
 
 ```powershell
 cd test-backend
@@ -22,7 +41,7 @@ Po starcie API zostaje zseedowane przykładowymi użytkownikami i postami. Endpo
 - `GET /posts`, `POST /posts`, `PUT /posts/{id}`, `DELETE /posts/{id}`
 - `POST /posts/{id}/like`, `POST /posts/{id}/share`, `POST /posts/{id}/comments`
 
-## Frontend (Next.js 14 / React 19)
+## Frontend (Next.js 14 / React 19) - uruchamianie ręczne
 
 ```powershell
 cd my-app
